@@ -4,7 +4,6 @@ const prisma = new PrismaClient()
 
 const loginHandler = async (req, res) => {
     const { username, pass } = req.query
-    console.log(pass)
     const savedPass = await prisma.user.findUnique({
         where: {
             username: username,
@@ -12,7 +11,9 @@ const loginHandler = async (req, res) => {
         select: {
             pass: true
         }
-    })?.pass
+    }).then(res => {
+        return res ? res.pass : null
+    })
     pass === savedPass ? res.status(200).json({ auth: true }) : res.status(401).json({ auth: false })
 }
 

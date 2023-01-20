@@ -1,23 +1,34 @@
 import axios from "axios"
+import { useContext, useState } from "react"
+import { UserSessionContext } from "@/contexts/UserSessionContext"
 const HeroForm = () => {
-
-    const login = (e) => {
+    const [isLogging, setIsLogging] = useState(false)
+    const { userSession, setUserSession } = useContext(UserSessionContext)
+    const login = async (e) => {
         const { currentTarget } = e
         const { user, password, remember } = currentTarget
+        setIsLogging(true)
         e.preventDefault()
-        axios.get("api/login", {
-            params: {
-                username: user.value,
-                pass: password.value
-            }
-        }).catch(({message}) => {
-            console.log("error:", message)
-        })
+        try {
+            const {data: {auth}} = await axios.get("api/login", {
+                params: {
+                    username: user.value,
+                    pass: password.value
+                }
+            })
+            setUserSession(auth)
+        }
+        catch (error) {
+
+            console.log(error.response.data.auth)
+        }
         currentTarget.reset()
     }
 
     return (
-        <form onSubmit={login} className="w-[85%]">
+        <form onSubmit={(e) => {
+            login(e).then(() => setIsLogging(false))
+        }} className="w-[85%]">
             <div className="mb-6">
                 <label
                     htmlFor="user"
@@ -68,7 +79,7 @@ const HeroForm = () => {
                     type="submit"
                     className="shadow-sm bg-[#d1e5e6] hover:bg-[#dff4f5] animation-all duration-500 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm mx-auto w-full sm:w-1/2 px-5 py-2.5 text-center dark:bg-[#6fbabd] dark:hover:bg-[#57afb2] dark:focus:ring-blue-800"
                 >
-                    Submit
+                    {isLogging ? "Iniciando sesión..." : "Submit"}
                 </button>
             </div>
         </form>

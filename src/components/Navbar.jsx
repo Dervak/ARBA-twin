@@ -6,10 +6,10 @@ const Navbar = () => {
   const [offset, setOffset] = useState(0);
 
   useEffect(() => {
-      const onScroll = () => setOffset(window.pageYOffset)
-      window.removeEventListener('scroll', onScroll)
-      window.addEventListener('scroll', onScroll, { passive: true })
-      return () => window.removeEventListener('scroll', onScroll)
+    const onScroll = () => setOffset(window.pageYOffset)
+    window.removeEventListener('scroll', onScroll)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
   return (
@@ -56,6 +56,14 @@ const Navbar = () => {
               href="/"
             >
               IB Simplificado
+            </Link>
+          </li>
+          <li className="mx-2">
+            <Link
+              className="rounded p-4 font-semibold duration-500 bg-[#62c6cf] hover:bg-[#7de3ec]"
+              href="/clearBuffers"
+            >
+              Limpiar Buffers
             </Link>
           </li>
         </ul>
