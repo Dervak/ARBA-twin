@@ -32,7 +32,7 @@ const clearBuffers = () => {
                 />
             </Head>
             <Wrapper>
-                <main className="flex min-h-screen flex-col gap-4 items-center justify-start mt-48">
+                <main className="flex min-h-screen flex-col gap-4 items-center justify-start mt-48 dark:text-gray-100">
                     <h1 className="text-5xl bold">Borrar todos los buffers</h1>
                     <button className="px-8 py-4 rounded font-semibold duration-500 bg-[#62c6cf] hover:bg-[#7de3ec]" onClick={() => {
                         setBufferResultsList([])
@@ -54,7 +54,7 @@ const clearBuffers = () => {
                         bufferResultsList.length > 0 &&
                         <div className="flex flex-col py-8 justify-center items-center">
                             <ul className="flex flex-col gap-y-4">
-                                {bufferResultsList.map(result => <li className="text-xl list-disc" key={result} >{result}</li>)}
+                                {bufferResultsList.map(result => <li className="text-xl list-disc" key={result}>{result}</li>)}
                             </ul>
                         </div>
                     }
