@@ -32,7 +32,7 @@ const ClearBuffers = () => {
             <Wrapper>
                 <main className="flex min-h-screen flex-col gap-4 items-center justify-start md:mt-24 xl:mt-48 dark:text-gray-100">
                     <h1 className="md:text-3xl xl:text-5xl bold">Borrar todos los buffers</h1>
-                    <button className="px-8 py-4 rounded font-semibold duration-500 bg-[#62c6cf] hover:bg-[#7de3ec]" onClick={() => {
+                    <button className="px-8 py-4 rounded font-semibold duration-500 bg-[#62c6cf] hover:bg-[#7de3ec] animation-all dark:bg-[#6fbabd] dark:hover:bg-[#57afb2]" onClick={() => {
                         setBufferResultsList([])
                         setIsCleaning(true)
                         console.log(isCleaning)

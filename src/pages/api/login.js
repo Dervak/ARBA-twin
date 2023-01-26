@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient()
 
 const loginHandler = async (req, res) => {
+    
     const { username, pass } = req.query
     const savedPass = await prisma.user.findUnique({
         where: {
