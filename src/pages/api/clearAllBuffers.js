@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { env } from 'next.config'
 
 const clearAllBuffers = async (req, res) => {
     const buffers = await getAllBuffers()
@@ -15,9 +16,12 @@ const clearAllBuffers = async (req, res) => {
 }
 
 const getAllBuffers = async () => {
+    const hostUsr = process.env.HOST_USR
+    const hostPsw = process.env.HOST_PSW
+
     try {
         const ticket = await getConnectionTicket()
-        const buffersRes = await axios.post(`https://sso.arba.gov.ar/Login/login?service=http://www10.arba.gov.ar/TareasManuales/seguridad/limpiezaBufferEX.do&lt=${ticket}&username=D752480&password=Gimnasia22&userComponent=op_Host`)
+        const buffersRes = await axios.post(`https://sso.arba.gov.ar/Login/login?service=http://www10.arba.gov.ar/TareasManuales/seguridad/limpiezaBufferEX.do&lt=${ticket}&username=${hostUsr}&password=${hostPsw}&userComponent=op_Host`)
         const idText = buffersRes.data.match(/<input type="radio" name="opciones" onclick="setOpcion(.+)">/g)
         const idArray = idText.map(id => {
             return parseInt(id.replace(`<input type="radio" name="opciones" onclick="setOpcion('`, "").replace(`')">`, ""))

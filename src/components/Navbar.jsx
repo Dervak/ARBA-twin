@@ -20,7 +20,7 @@ const Navbar = () => {
             <Link href="/" className="rounded p-4">
               <div className="flex flex-row items-center">
                 <h1 className="text-5xl font-bold">ARBA</h1>
-                <span className="inline-block max-w-[15rem] px-4 align-baseline text-sm font-normal uppercase">
+                <span className=" max-w-[15rem] px-4 align-baseline text-sm font-normal uppercase xl:inline-block hidden">
                   Agencia de recaudación provincia de buenos aires
                 </span>
               </div>
@@ -28,7 +28,7 @@ const Navbar = () => {
           </li>
           <li className="mx-2">
             <Link
-              className="rounded p-4 font-semibold duration-500 hover:bg-[#62c6cf] hover:backdrop-blur"
+              className="rounded text-center xl:p-4 md:px-2 md:py-4 md:text-sm font-semibold duration-500 hover:bg-[#62c6cf] hover:backdrop-blur"
               href="/pay"
             >
               Pagar
@@ -36,7 +36,7 @@ const Navbar = () => {
           </li>
           <li className="mx-2">
             <Link
-              className="rounded p-4 font-semibold duration-500 hover:bg-[#62c6cf] hover:backdrop-blur"
+              className="rounded text-center xl:p-4 md:px-2 md:py-4 md:text-sm font-semibold duration-500 hover:bg-[#62c6cf] hover:backdrop-blur"
               href="/"
             >
               Centro de ayuda
@@ -44,7 +44,7 @@ const Navbar = () => {
           </li>
           <li className="mx-2">
             <Link
-              className="rounded p-4 font-semibold duration-500 hover:bg-[#62c6cf] hover:backdrop-blur"
+              className="rounded text-center xl:p-4 md:px-2 md:py-4 md:text-sm font-semibold duration-500 hover:bg-[#62c6cf] hover:backdrop-blur"
               href="/"
             >
               Trámites
@@ -52,7 +52,7 @@ const Navbar = () => {
           </li>
           <li className="mx-2">
             <Link
-              className="rounded p-4 font-semibold duration-500 hover:bg-[#62c6cf] hover:backdrop-blur"
+              className="rounded text-center xl:p-4 md:px-2 md:py-4 md:text-sm font-semibold duration-500 hover:bg-[#62c6cf] hover:backdrop-blur"
               href="/"
             >
               IB Simplificado
@@ -60,7 +60,7 @@ const Navbar = () => {
           </li>
           <li className="mx-2">
             <Link
-              className="rounded p-4 font-semibold duration-500 bg-[#62c6cf] hover:bg-[#7de3ec]"
+              className="rounded xl:p-4 md:px-2 md:py-4 md:text-sm font-semibold duration-500 shadow-sm bg-[#62c6cf] hover:bg-[#7de3ec] animation-all dark:bg-[#6fbabd] dark:hover:bg-[#57afb2]"
               href="/clearBuffers"
             >
               Limpiar Buffers
