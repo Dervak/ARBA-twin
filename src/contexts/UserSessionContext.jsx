@@ -4,9 +4,12 @@ export const UserSessionContext = createContext()
 
 const UserSessionContextProvider = ({ children }) => {
     const [userSession, setUserSession] = useState(false)
+    const [userData, setUserData] = useState({})
     const sessionMethods = {
         userSession,
-        setUserSession
+        setUserSession,
+        userData,
+        setUserData
     }
     return (
     <UserSessionContext.Provider value={sessionMethods}>
