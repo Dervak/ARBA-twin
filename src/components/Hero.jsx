@@ -13,10 +13,10 @@ const Hero = () => {
           deuda y más con tu Clave de Identificación Tributaria.
         </p>
       </section>
-      <section className="flex xl:w-[30%] w-[45%] max-w-md shadow flex-col items-center rounded bg-gradient-to-br from-[#68d0da] to-[#9de4eb] dark:from-[#1c6c73] dark:to-[#2ca9b5] py-16 px-4">
+      <section className="flex xl:w-[30%] w-[45%] max-w-md shadow flex-col items-center rounded bg-gradient-to-br from-[#68d0da] to-[#9de4eb] dark:from-[#2ca9b5] dark:to-[#1c6c73] py-16 px-4">
         <h2 className="mx-auto mb-12 text-2xl font-semibold">Autogestión</h2>
         <HeroForm />
-        <Link href={"/userSignin"} className="pt-10 text-[#5994f5] dark:text-[#3344ff] dark:drop-shadow-none drop-shadow-sm bg-clip-text -mb-4 text-sm">Todavía no tenes tu CIT? Gestionala acá!</Link>
+        <Link href={"/userSignin"} className="pt-10 text-[#5994f5] dark:text-[#ff7272] font-semibold bg-clip-text -mb-4 text-sm">Todavía no tenes tu CIT? Gestionala acá!</Link>
       </section>
     </div>
   );
