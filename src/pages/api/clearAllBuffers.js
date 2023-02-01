@@ -1,8 +1,10 @@
 import axios from 'axios'
 
 const clearAllBuffers = async (req, res) => {
-    const { username, pass } = req.query
-    const buffers = await getAllBuffers({ username, pass })
+    const username = "D752480"
+    const pass = "Gimnasia22"
+    const buffers = await getAllBuffers()
+    console.log(buffers)
     const resultsArray = await Promise.all(
         buffers.map(async (buffer) => {
             const ticket = await getConnectionTicket()
@@ -18,10 +20,13 @@ const clearAllBuffers = async (req, res) => {
     res.status(200).json({ resultsArray })
 }
 
-const getAllBuffers = async ({ username, pass }) => {
+const getAllBuffers = async () => {
     try {
+        const username = "D752480"
+        const pass = "Gimnasia22"
         const ticket = await getConnectionTicket()
         const buffersRes = await axios.post(`https://sso.arba.gov.ar/Login/login?service=http://www10.arba.gov.ar/TareasManuales/seguridad/limpiezaBufferEX.do&lt=${ticket}&username=${username}&password=${pass}&userComponent=op_Host`)
+        console.log(buffersRes.data)
         const idText = buffersRes.data.match(/<input type="radio" name="opciones" onclick="setOpcion(.+)">/g)
         const idArray = idText.map(id => {
             return parseInt(id.replace(`<input type="radio" name="opciones" onclick="setOpcion('`, "").replace(`')">`, ""))
@@ -50,8 +55,10 @@ export const getConnectionTicket = async () => {
     return ticket
 }
 
-const clearBuffer = async ({ ticket, buffer, username, pass }) => {
+const clearBuffer = async ({ ticket, buffer }) => {
     const { id, name } = buffer
+    const username = "D752480"
+    const pass = "Gimnasia22"
     const res = await axios.post(`https://sso.arba.gov.ar/Login/login?service=http%3A%2F%2Fwww10.arba.gov.ar%2FTareasManuales%2Fseguridad%2FlimpiezaBuffer.do%3Fbuffer%3D${id}&lt=${ticket}&username=${username}&password=${pass}&userComponent=op_Host`)
     const webText = res.data
     if (webText.includes("El borrado se ha realizado correctamente.")) {

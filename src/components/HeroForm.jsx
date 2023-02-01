@@ -18,11 +18,9 @@ const HeroForm = () => {
         }
         console.log(encrypt(encryptProps))
         try {
-            const {data: {auth}} = await axios.get("api/login", {
-                data: {
-                    username: user.value,
-                    pass: encrypt(encryptProps)
-                }
+            const { data: { auth } } = await axios.post("api/login", {
+                username: user.value,
+                pass: password.value
             })
             console.log(auth)
             setUserSession(auth)

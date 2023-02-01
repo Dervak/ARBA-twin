@@ -5,41 +5,55 @@ import axios from 'axios'
 const prisma = new PrismaClient()
 
 const loginSso = async ({ username, pass }) => {
-    const ticket = await getConnectionTicket()
-    const loginRes = await axios.post(`https://sso.arba.gov.ar/Login/login?service=http://www10.arba.gov.ar/TareasManuales/seguridad/limpiezaBufferEX.do&lt=${ticket}&username=${username}&password=${pass}&userComponent=op_Host`)
-    const loginText = loginRes.data
-    if (loginText.includes("El usuario ingresado y/o la contraseña no son válidos")) {
-        return false
-    } else {
-        return true
+    try {
+        const ticket = await getConnectionTicket()
+        const loginRes = await axios.post(`https://sso.arba.gov.arb/Login/login?service=http://www10.arba.gov.ar/TareasManuales/seguridad/limpiezaBufferEX.do&lt=${ticket}&username=${username}&password=${pass}&userComponent=op_Host`)
+        const loginText = loginRes.data
+        return { auth: !loginText.includes("El usuario ingresado y/o la contrase�a no son v�lidos") }
+    }
+    catch (error) {
+        return { auth: false, error }
+    }
+}
+
+const loginPrisma = async ({ username, pass }) => {
+    try {
+        const savedPass = await prisma.user.findUnique({
+            where: {
+                username: username,
+            },
+            select: {
+                pass: true
+            }
+        }).then(res => res ? res.pass : null)
+        return { auth: pass === savedPass }
+    }
+    catch (error) {
+        return { auth: false, error }
     }
 }
 
 const loginHandler = async (req, res) => {
-
-    const { username, pass } = req.query
-    const savedPass = await prisma.user.findUnique({
-        where: {
-            username: username,
-        },
-        select: {
-            pass: true
+    const { username, pass } = req.body
+    const prismaResult = await loginPrisma({ username, pass })
+    const ssoResult = await loginSso({ username, pass })
+    if (prismaResult.error && ssoResult.error) {
+        const errors = {
+            prisma: prismaResult.error,
+            sso: ssoResult.error
         }
-    }).then(res => {
-        return res ? res.pass : null
-    })
-    //check if exists in local
-    if (pass === savedPass) {
-        res.status(200).json({ auth: true })
+        console.log(errors.prisma.toString().includes("Can't reach database server"))
+        res.status(400).json({
+            auth: false,
+            errors: {
+                prisma: prismaResult.error,
+                sso: ssoResult.error
+            }
+        })
         return
     }
-    //check if exists in sso
-    if (await loginSso({ username, pass })) {
-        res.status(200).json({ auth: true })
-        return
-    }
-    //login failed
-    res.status(401).json({ auth: false })
+
+    res.status(200).json({ auth: prismaResult.auth || ssoResult.auth })
 }
 
 export default loginHandler
