@@ -1,32 +1,51 @@
 import axios from 'axios'
+import { Cookie } from 'tough-cookie'
+import { decrypt } from '@/utils/encryptationHelper'
+import apiAuth from '@/utils/apiAuth'
+import fs from 'fs-extra'
 
-const clearAllBuffers = async (req, res) => {
-    const username = "D752480"
-    const pass = "Gimnasia22"
-    const buffers = await getAllBuffers()
-    console.log(buffers)
-    const resultsArray = await Promise.all(
-        buffers.map(async (buffer) => {
-            const ticket = await getConnectionTicket()
-            const loginProps = {
-                username,
-                pass,
-                ticket,
-                buffer
-            }
-            const result = await clearBuffer(loginProps)
-            return result
-        }))
-    res.status(200).json({ resultsArray })
+
+const clearAllBuffers = apiAuth(async (req, res) => {
+    const username = decrypt({ text: req.body.username }).toUpperCase()
+    const pass = decrypt({ text: req.body.pass })
+    try {
+        const { cookie, error: authError } = await authenticate({ username, pass })
+        if (authError) throw authError
+        const { buffers, error: buffersError } = await getAllBuffers({ cookie })
+        if (buffersError) throw buffersError
+        const resultsArray = await Promise.all(
+            buffers.map(async (buffer) => {
+                const { ticket } = await getConnectionTicket()
+                const result = await clearBuffer({ ticket, username, pass, buffer })
+                return result
+            }))
+        res.status(200).json({ resultsArray })
+    }
+    catch (error) {
+        res.status(400).json({ error, cause: "El servidor de ARBA no responde" })
+    }
+})
+
+const authenticate = async ({ username, pass }) => {
+    try {
+        const { ticket, error: ticketError } = await getConnectionTicket()
+        if (ticketError) throw ticketError
+        const authRes = await axios.post(`https://sso.arba.gov.ar/Login/login?service=http://www10.arba.gov.ar/TareasManuales/seguridad/limpiezaBufferEX.do&lt=${ticket}&username=${username}&password=${pass}&userComponent=op_Host`)
+        const cookie = Cookie.parse(authRes.headers['set-cookie'].toString())
+        return { cookie: cookie.cookieString() }
+    }
+    catch (error) {
+        return { error }
+    }
 }
 
-const getAllBuffers = async () => {
+const getAllBuffers = async ({ cookie }) => {
     try {
-        const username = "D752480"
-        const pass = "Gimnasia22"
-        const ticket = await getConnectionTicket()
-        const buffersRes = await axios.post(`https://sso.arba.gov.ar/Login/login?service=http://www10.arba.gov.ar/TareasManuales/seguridad/limpiezaBufferEX.do&lt=${ticket}&username=${username}&password=${pass}&userComponent=op_Host`)
-        console.log(buffersRes.data)
+        const buffersRes = await axios.get(`http://www10.arba.gov.ar/TareasManuales/seguridad/limpiezaBufferEX.do`, {
+            headers: {
+                Cookie: cookie
+            },
+        })
         const idText = buffersRes.data.match(/<input type="radio" name="opciones" onclick="setOpcion(.+)">/g)
         const idArray = idText.map(id => {
             return parseInt(id.replace(`<input type="radio" name="opciones" onclick="setOpcion('`, "").replace(`')">`, ""))
@@ -41,34 +60,41 @@ const getAllBuffers = async () => {
                 name: nameArray[i]
             }
         })
-        return buffers
+        return { buffers }
     }
     catch (error) {
-        // console.log(error)
+        return { error }
     }
 }
 
 export const getConnectionTicket = async () => {
-    const connectionRes = await axios.get("https://sso.arba.gov.ar/Login/login?service=http://www10.arba.gov.ar/TareasManuales/seguridad/limpiezaBufferEX.do")
-    const ticketText = connectionRes.data.match(/<input type="hidden" name="lt" value="(.+)">/g).toString()
-    const ticket = ticketText.replace(`<input type="hidden" name="lt" value="`, "").replace(`">`, "")
-    return ticket
+    try {
+        const connectionRes = await axios.get("https://sso.arba.gov.ar/Login/login?service=http://www10.arba.gov.ar/TareasManuales/seguridad/limpiezaBufferEX.do")
+        const ticketText = connectionRes.data.match(/<input type="hidden" name="lt" value="(.+)">/g).toString()
+        const ticket = ticketText.replace(`<input type="hidden" name="lt" value="`, "").replace(`">`, "")
+        return { ticket }
+    }
+    catch (error) {
+        return { error }
+    }
 }
 
-const clearBuffer = async ({ ticket, buffer }) => {
+const clearBuffer = async ({ buffer, username, pass, ticket }) => {
     const { id, name } = buffer
-    const username = "D752480"
-    const pass = "Gimnasia22"
-    const res = await axios.post(`https://sso.arba.gov.ar/Login/login?service=http%3A%2F%2Fwww10.arba.gov.ar%2FTareasManuales%2Fseguridad%2FlimpiezaBuffer.do%3Fbuffer%3D${id}&lt=${ticket}&username=${username}&password=${pass}&userComponent=op_Host`)
-    const webText = res.data
-    if (webText.includes("El borrado se ha realizado correctamente.")) {
-        const delItemsText = webText.match(/<td class="texto11" align="center">Cantidad de Objetos Borrados :&nbsp;<b>(.+)<\/b><\/td>/g).toString()
-        const delItems = delItemsText.replace(`<td class="texto11" align="center">Cantidad de Objetos Borrados :&nbsp;<b>`, "").replace(`</b></td>`, "")
-        return `El buffer ${name} se limpio correctamente y se borraron ${delItems} items.`
-        // console.log(`El buffer ${name} se limpio correctamente y se borraron ${delItems} items.`)
-    } else {
-        return `La limpieza del buffer ${name} falló.`
-        // console.log(`La limpieza del buffer ${name} falló.`)
+    try {
+        const res = await axios.post(`https://sso.arba.gov.ar/Login/login?service=http%3A%2F%2Fwww10.arba.gov.ar%2FTareasManuales%2Fseguridad%2FlimpiezaBuffer.do%3Fbuffer%3D${id}&lt=${ticket}&username=${username}&password=${pass}&userComponent=op_Host`)
+        const webText = res.data
+        if (webText.includes("El borrado se ha realizado correctamente.")) {
+            const delItemsText = webText.match(/<td class="texto11" align="center">Cantidad de Objetos Borrados :&nbsp;<b>(.+)<\/b><\/td>/g).toString()
+            const delItems = delItemsText.replace(`<td class="texto11" align="center">Cantidad de Objetos Borrados :&nbsp;<b>`, "").replace(`</b></td>`, "")
+            return { buffer: name, success: true, delItems: delItems }
+            // console.log(`El buffer ${name} se limpio correctamente y se borraron ${delItems} items.`)
+        } else {
+            return { buffer: name, success: false, delItems: null }
+            // console.log(`La limpieza del buffer ${name} falló.`)
+        }
+    } catch (error) {
+        return { error }
     }
 }
 export default clearAllBuffers

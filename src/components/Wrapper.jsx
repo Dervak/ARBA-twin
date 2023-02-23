@@ -1,11 +1,31 @@
 import Head from "next/head"
-import { useContext } from "react"
+import { useContext, useEffect, useState } from "react"
 import { UserSessionContext } from "@/contexts/UserSessionContext"
-import Navbar from "./Navbar"
+import Navbar from "./Navbar/Navbar"
+import { checkUserSession } from "@/utils/sessionHelper";
 
 const Wrapper = ({ children, title = "ARBA" }) => {
-    const { userSession } = useContext(UserSessionContext)
-    return (
+    const { userSession, setUserData, setUserSession, sessionErrorHandler } = useContext(UserSessionContext)
+    const [gettingLocalSession, setGettingLocalSession] = useState(false)
+    useEffect(() => {
+        const getLocalSession = async () => {
+            setGettingLocalSession(true)
+            const { auth, cause, name, username, pass, noLocalSession } = await checkUserSession()
+            if (noLocalSession) return { session: false }
+            if (!auth) {
+                sessionErrorHandler({ cause })
+                return { auth: false }
+            }
+            sessionErrorHandler({ cause })
+            setUserSession(auth)
+            setUserData({ username, pass, name })
+        }
+        !userSession && getLocalSession()
+            .then(() => {
+                setGettingLocalSession(false)
+            })
+    }, [])
+    return !gettingLocalSession && (
         <>
             <Head>
                 <title>{title}</title>
@@ -20,10 +40,9 @@ const Wrapper = ({ children, title = "ARBA" }) => {
             </Head>
             <div className="min-h-screen bg-gradient-to-b from-[#d1e5e6] to-slate-100 dark:from-[#244242] dark:to-slate-800 transition-all duration-500">
                 <Navbar />
-                <div className="flex items-center justify-center">
-                    {userSession.toString()}
-                </div>
-                {children}
+                <main className="min-h-[calc(100vh-96px)]">
+                    {children}
+                </main>
             </div>
         </>
     )
