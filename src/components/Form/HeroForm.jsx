@@ -109,7 +109,8 @@ const HeroForm = () => {
             <div className="flex items-center">
                 <button
                     type="submit"
-                    className="shadow-sm bg-[#d1e5e6] hover:bg-[#dff4f5] animation-all duration-500 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm mx-auto w-full sm:w-1/2 px-5 py-2.5 text-center dark:bg-[#6fbabd] dark:hover:bg-[#57afb2] dark:focus:ring-blue-800"
+                    className={`${isLogging && "cursor-wait"} shadow-sm bg-[#d1e5e6] hover:bg-[#dff4f5] animation-all duration-500 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm mx-auto w-full sm:w-1/2 px-5 py-2.5 text-center dark:bg-[#6fbabd] dark:hover:bg-[#57afb2] dark:focus:ring-blue-800`}
+                    disabled={isLogging}
                 >
                     {isLogging ? "Iniciando sesión..." : "Iniciar sesión"}
                 </button>
