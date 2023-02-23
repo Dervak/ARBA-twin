@@ -7,7 +7,6 @@ import apiAuth from "@/utils/apiAuth";
 const loginHandler = apiAuth(async (req, res) => {
     const username = decrypt({ text: req.body.username })
     const pass = decrypt({ text: req.body.pass })
-    console.log(username, pass)
     const prismaResult = await loginPrisma({ username, pass })
     const ssoResult = await loginSso({ username: username.toUpperCase(), pass })
     if (prismaResult.error && ssoResult.error) {
