@@ -27,10 +27,16 @@ const WeatherWidget = () => {
     }
     const getWeatherData = async () => {
         try {
-            const { data: { weatherData } } = await axios.post("api/weather", {
-                lat: currentLocation.lat,
-                lon: currentLocation.lon
-            })
+            const { data: { weatherData } } = await axios.post("api/weather",
+                {
+                    lat: currentLocation.lat,
+                    lon: currentLocation.lon
+                },
+                {
+                    headers: {
+                        'x-api-key': process.env.API_KEY
+                    }
+                })
             weatherError && setWeatherError("")
             setWeatherData(weatherData)
         }

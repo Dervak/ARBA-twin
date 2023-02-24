@@ -4,6 +4,7 @@ import BufferResult from "./BufferResult";
 import { UserSessionContext } from "@/contexts/UserSessionContext";
 import { useState, useContext, useEffect } from "react";
 import { useRouter } from "next/router";
+import PlaceholderPage from "../PlaceholderPage";
 
 const ClearBuffers = () => {
     let errorTimeout, buffersTimeout = null
@@ -55,39 +56,41 @@ const ClearBuffers = () => {
             handleClearError({ cause })
         }
     }
-    return userSession && (
-        <Wrapper title="Limpiar Buffers | Operaciones">
-            <main className="flex min-h-screen flex-col gap-4 items-center justify-start md:mt-24 xl:mt-48 dark:text-gray-100">
-                <h1 className="md:text-3xl xl:text-5xl bold">Borrar todos los buffers</h1>
-                <button disabled={isCleaning} className="px-8 py-4 rounded font-semibold duration-500 bg-[#62c6cf] hover:bg-[#7de3ec] animation-all dark:bg-[#6fbabd] dark:hover:bg-[#57afb2] disabled:cursor-wait" onClick={() => {
-                    setIsCleaning(true)
-                    setBufferResultsList([])
-                    clearAllBuffers()
-                        .then(() => {
-                            setIsCleaning(false)
-                        })
-                }}>Limpiar buffers</button>
-                {
-                    clearError &&
-                    <span className="text-red-400 text-sm text-center">{clearError}</span>
-                }
-                {
-                    isCleaning &&
-                    <div className="flex flex-col py-8 justify-center items-center">
-                        <p className="md:text-xl xl:text-3xl font-semibold after:content-[''] after:animate-dots">Borrando buffers</p>
-                    </div>
-                }
-                {
-                    bufferResultsList.length > 0 &&
-                    <div className="flex flex-col py-8 justify-center items-center">
-                        <ul className="flex flex-col gap-y-4">
-                            {bufferResultsList.map(({ buffer, success, delItems }) => <BufferResult key={buffer} buffer={buffer} success={success} delItems={delItems} />)}
-                        </ul>
-                    </div>
-                }
-            </main>
-        </Wrapper>
-    )
+    return userSession
+        ? (
+            <Wrapper title="Limpiar Buffers | Operaciones">
+                <main className="flex min-h-screen flex-col gap-4 items-center justify-start md:mt-24 xl:mt-48 dark:text-gray-100">
+                    <h1 className="md:text-3xl xl:text-5xl bold">Borrar todos los buffers</h1>
+                    <button disabled={isCleaning} className="px-8 py-4 rounded font-semibold duration-500 bg-[#62c6cf] hover:bg-[#7de3ec] animation-all dark:bg-[#6fbabd] dark:hover:bg-[#57afb2] disabled:cursor-wait" onClick={() => {
+                        setIsCleaning(true)
+                        setBufferResultsList([])
+                        clearAllBuffers()
+                            .then(() => {
+                                setIsCleaning(false)
+                            })
+                    }}>Limpiar buffers</button>
+                    {
+                        clearError &&
+                        <span className="text-red-400 text-sm text-center">{clearError}</span>
+                    }
+                    {
+                        isCleaning &&
+                        <div className="flex flex-col py-8 justify-center items-center">
+                            <p className="md:text-xl xl:text-3xl font-semibold after:content-[''] after:animate-dots">Borrando buffers</p>
+                        </div>
+                    }
+                    {
+                        bufferResultsList.length > 0 &&
+                        <div className="flex flex-col py-8 justify-center items-center">
+                            <ul className="flex flex-col gap-y-4">
+                                {bufferResultsList.map(({ buffer, success, delItems }) => <BufferResult key={buffer} buffer={buffer} success={success} delItems={delItems} />)}
+                            </ul>
+                        </div>
+                    }
+                </main>
+            </Wrapper>
+        )
+        : <PlaceholderPage message="Redireccionando" />
 }
 
 export default ClearBuffers;
