@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import {Moon, Sunny} from "@styled-icons/ionicons-solid"
+import { Moon, Sunny } from "@styled-icons/ionicons-solid"
 
 const Darkmode = () => {
     const [darkmode, setDarkmode] = useState(false)
@@ -17,7 +17,7 @@ const Darkmode = () => {
     }
     return (
         <button onClick={toggleDarkmode} className={`relative inline-flex w-8 h-8 justify-center items-center rounded-full transition-all duration-500 hover:bg-[#f2f8f8] dark:hover:bg-[#335c5c]`}>
-            <Moon className={`absolute w-7 h-7 transition-all duration-500 text-white ${darkmode ? "opacity-100" : "opacity-0"}`} /><Sunny className= {`absolute w-7 h-7 transition-all duration-500 text-[#282828] ${darkmode ? "opacity-0" : "opacity-100"}`}/>
+            {darkmode ? <Moon className="w-7 h-7 transition-all duration-500 text-white" /> : <Sunny className="w-7 h-7 transition-all duration-500 text-[#282828]" />}
         </button>
     );
 };

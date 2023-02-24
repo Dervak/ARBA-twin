@@ -1,11 +1,12 @@
 import axios from "axios"
 import fs from "fs-extra"
 import path from "path"
+import apiAuth from "@/utils/apiAuth"
 
 const folderName = path.join(__dirname, "weatherToken")
 const filePath = path.join(folderName, "weatherToken.txt")
 
-const weather = async (req, res) => {
+const weather = apiAuth(async (req, res) => {
     const { lat, lon } = req.body
     try {
         const { token } = await getWeatherToken()
@@ -16,7 +17,7 @@ const weather = async (req, res) => {
     catch (error) {
         res.status(400).json({ cause: "El servicio del clima no responde" })
     }
-}
+})
 
 const getLocalWeatherToken = async () => {
     try {

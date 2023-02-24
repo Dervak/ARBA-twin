@@ -5,7 +5,7 @@ import { Refresh } from "styled-icons/evaicons-solid"
 
 const WeatherWidget = () => {
     const [weatherError, setWeatherError] = useState("")
-    const [weatherData, setWeatherData] = useState(undefined)
+    const [weatherData, setWeatherData] = useState(null)
     const [currentLocation, setCurrentLocation] = useState({ lat: "", lon: "" })
     const getCurrentLocation = async () => {
         const location = await new Promise(
@@ -35,22 +35,22 @@ const WeatherWidget = () => {
             setWeatherData(weatherData)
         }
         catch (error) {
-            setWeatherData(undefined)
+            setWeatherData(null)
             setWeatherError(error.response.data.cause)
         }
     }
     useEffect(() => {
         getCurrentLocation()
         getWeatherData()
+        console.log(weatherData)
     }, [currentLocation])
-    console.log(weatherData)
     return (
         <div className="fixed font-semibold dark:text-white flex flex-col bottom-4 right-4 bg-slate-600/25 dark:bg-white/25 rounded backdrop-blur-sm w-[225px] aspect-[2/1]">
             <button title="Actualizar" className="w-5 h-5 flex justify-center items-center absolute top-1 right-1" onClick={() => getWeatherData()}><Refresh /></button>
             {weatherError && <span className="my-auto text-center">{weatherError}</span>}
             {weatherData && (
                 <>
-                    <span className="text-xl flex justify-around">{`${weatherData.location.name}`}<span className="text-base">{`${new Date(weatherData.date).getHours()}:${new Date().getMinutes()}`}</span></span>
+                    <span className="text-xl flex justify-around">{`${weatherData.location.name}`}<span className="text-base">{`${new Date(weatherData.date).getHours()}:${new Date().getMinutes().toString().padStart(2, '0')}`}</span></span>
                     <div className="flex px-2 justify-between items-center">
                         <WeatherIcons weatherId={weatherData.weather.id} weatherDescription={weatherData.weather.description} />
                         <span className="text-3xl">{`${weatherData.temperature}°`}</span>

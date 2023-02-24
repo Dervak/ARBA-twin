@@ -2,7 +2,6 @@ import axios from 'axios'
 import { Cookie } from 'tough-cookie'
 import { decrypt } from '@/utils/encryptationHelper'
 import apiAuth from '@/utils/apiAuth'
-import fs from 'fs-extra'
 
 
 const clearAllBuffers = apiAuth(async (req, res) => {

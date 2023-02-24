@@ -1,6 +1,6 @@
 import axios from "axios";
 import Wrapper from "../Wrapper";
-import BuffersElement from "./BuffersElement";
+import BufferResult from "./BufferResult";
 import { UserSessionContext } from "@/contexts/UserSessionContext";
 import { useState, useContext, useEffect } from "react";
 import { useRouter } from "next/router";
@@ -13,7 +13,10 @@ const ClearBuffers = () => {
     const [bufferResultsList, setBufferResultsList] = useState([])
     const { userSession, userData } = useContext(UserSessionContext)
     useEffect(() => {
-        !userSession && router.push("/")
+        if (!userSession) {
+            sessionStorage.setItem("redirectUrl", "/clearBuffers")
+            router.push("/")
+        }
     }, [])
     const handleClearError = ({ cause }) => {
         setClearError(cause)
@@ -78,7 +81,7 @@ const ClearBuffers = () => {
                     bufferResultsList.length > 0 &&
                     <div className="flex flex-col py-8 justify-center items-center">
                         <ul className="flex flex-col gap-y-4">
-                            {bufferResultsList.map(result => <BuffersElement key={result.buffer} buffer={result.buffer} success={result.success} delItems={result.delItems} />)}
+                            {bufferResultsList.map(({ buffer, success, delItems }) => <BufferResult key={buffer} buffer={buffer} success={success} delItems={delItems} />)}
                         </ul>
                     </div>
                 }

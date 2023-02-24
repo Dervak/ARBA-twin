@@ -16,7 +16,7 @@ const UserMenu = () => {
     }
     return (
         <DropdownMenu.Root asChild onOpenChange={() => { setIsOpen(!isOpen) }}>
-            <DropdownMenu.Trigger className={`${isOpen && "bg-[#f2f8f8] dark:bg-[#335c5c]"} rounded py-[0.35rem] px-2 md:text-sm font-semibold duration-500 transition-all hover:bg-[#f2f8f8] dark:hover:bg-[#335c5c]`}>
+            <DropdownMenu.Trigger className={`${isOpen && "bg-[#f2f8f8] dark:bg-[#335c5c]"} rounded py-[0.35rem] px-2 md:text-sm font-semibold duration-500 outline-none transition-all hover:bg-[#f2f8f8] dark:hover:bg-[#335c5c]`}>
                 {userData.name ? userData.name : decrypt({text: userData.username})}
                 <svg
                     viewBox="0 0 20 20"
@@ -26,7 +26,7 @@ const UserMenu = () => {
                 </svg>
             </DropdownMenu.Trigger>
             <DropdownMenu.Content align="end" className="bg-[#f2f8f8] top-0 dark:bg-[#335c5c] rounded mt-1 shadow-sm py-2 px-[0.1rem] z-50">
-                <DropdownMenu.Item onClick={logout} className="cursor-pointer hover:bg-[#7de3ec] dark:hover:bg-[#57afb2] px-5 rounded-sm transition-all duration-500 focus-visible:outline-none">
+                <DropdownMenu.Item onClick={logout} className="cursor-pointer hover:bg-[#7de3ec] dark:hover:bg-[#57afb2] px-5 rounded-sm transition-all outline-none duration-500">
                     Cerrar sesión
                 </DropdownMenu.Item>
             </DropdownMenu.Content>

@@ -18,7 +18,7 @@ const Navbar = () => {
   }, [])
 
   return (
-    <div className="flex flex-col sticky top-0">
+    <div className="flex flex-col sticky top-0 min-h-[6rem]">
       {sessionError &&
         <div className="sticky top-0 w-full text-center text-white text-lg bg-red-400">
           {sessionError}
@@ -27,7 +27,7 @@ const Navbar = () => {
       <header className={`${offset > 0 && "shadow-sm"} duration-500 transition-shadow pointer-events-auto z-10 bg-[#d1e5e6] dark:bg-[#234041] bg-opacity-90 dark:bg-opacity-90 backdrop-blur px-8 flex justify-between w-full items-center dark:text-white`}>
         <nav className="">
           <ul className="flex flex-row items-center">
-            <li className="mx-2">
+            <li className="outline-none select-none mx-2">
               <Link href="/" className="rounded p-4">
                 <div className="flex flex-row items-center">
                   <h1 className="text-5xl font-bold">ARBA</h1>
